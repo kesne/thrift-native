@@ -1,5 +1,5 @@
 const thrift = require('thrift');
-const { Protocol } = require('./');
+const { Serializer } = require('./');
 const Benchmark = require('benchmark');
 const { Basic } = require('./codegen/basic_types');
 const { ListingLocationUpdate, Neighborhood } = require('./codegen/listings_types');
@@ -24,27 +24,27 @@ const listingUpdate = new ListingLocationUpdate({
 const encodedJSON = JSON.stringify(listingUpdate);
 const encodedByteArray = Buffer.from('FgIXW7G/7J7IXkAX4xx1dFxKlEAW3gEWvAMWmgUZrBYAGAZuYW1lLTAAFgIYBm5hbWUtMQAWBBgGbmFtZS0yABYGGAZuYW1lLTMAFggYBm5hbWUtNAAWChgGbmFtZS01ABYMGAZuYW1lLTYAFg4YBm5hbWUtNwAWEBgGbmFtZS04ABYSGAZuYW1lLTkAAA==', 'base64');
 
-console.log();
-console.log('Running Suite: Read');
-new Benchmark.Suite('read')
-  .add('neighborhood -> json', () => {
-    const json = JSON.parse(encodedJSON);
-    return new Basic(json);
-  })
-  .add('neighborhood -> thrift', () => {
-    var transport = new thrift.TFramedTransport(encodedByteArray);
-    var protocol = new thrift.TCompactProtocol(transport);
-    var basic = new Basic();
-    basic.read(protocol);
-    return basic;
-  })
-  .on('cycle', function(event) {
-    console.log(String(event.target));
-  })
-  .on('complete', function() {
-    console.log('Fastest is ' + this.filter('fastest').map('name'));
-  })
-  .run();
+// console.log();
+// console.log('Running Suite: Read');
+// new Benchmark.Suite('read')
+//   .add('neighborhood -> json', () => {
+//     const json = JSON.parse(encodedJSON);
+//     return new Basic(json);
+//   })
+//   .add('neighborhood -> thrift', () => {
+//     var transport = new thrift.TFramedTransport(encodedByteArray);
+//     var protocol = new thrift.TCompactProtocol(transport);
+//     var basic = new Basic();
+//     basic.read(protocol);
+//     return basic;
+//   })
+//   .on('cycle', function(event) {
+//     console.log(String(event.target));
+//   })
+//   .on('complete', function() {
+//     console.log('Fastest is ' + this.filter('fastest').map('name'));
+//   })
+//   .run();
 
 console.log();
 console.log('Running Suite: Write');
@@ -59,9 +59,9 @@ new Benchmark.Suite('write')
     transport.flush();
   })
   .add('neighborhood -> thrift-native', function() {
-    var protocol = new Protocol();
-    listingUpdate.write(protocol);
-    protocol.flush();
+    var serializer = new Serializer();
+    listingUpdate.write(serializer);
+    serializer.flush();
   })
   .on('cycle', function(event) {
     console.log(String(event.target));
