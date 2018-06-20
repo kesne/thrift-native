@@ -18,11 +18,14 @@ public:
   static NAN_METHOD(WriteFieldStop);
   static NAN_METHOD(WriteListBegin);
   static NAN_METHOD(WriteListEnd);
+  static NAN_METHOD(WriteSetBegin);
+  static NAN_METHOD(WriteSetEnd);
   static NAN_METHOD(WriteString);
   static NAN_METHOD(WriteI16);
   static NAN_METHOD(WriteI32);
   static NAN_METHOD(WriteI64);
   static NAN_METHOD(WriteDouble);
+  static NAN_METHOD(WriteBool);
 
   static Nan::Persistent<v8::FunctionTemplate> constructor;
 

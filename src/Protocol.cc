@@ -22,10 +22,13 @@ NAN_MODULE_INIT(Protocol::Init) {
   Nan::SetPrototypeMethod(ctor, "writeFieldStop", WriteFieldStop);
   Nan::SetPrototypeMethod(ctor, "writeListBegin", WriteListBegin);
   Nan::SetPrototypeMethod(ctor, "writeListEnd", WriteListEnd);
+  Nan::SetPrototypeMethod(ctor, "writeSetBegin", WriteSetBegin);
+  Nan::SetPrototypeMethod(ctor, "writeSetEnd", WriteSetEnd);
   Nan::SetPrototypeMethod(ctor, "writeString", WriteString);
   Nan::SetPrototypeMethod(ctor, "writeI16", WriteI16);
   Nan::SetPrototypeMethod(ctor, "writeI32", WriteI32);
   Nan::SetPrototypeMethod(ctor, "writeI64", WriteI64);
+  Nan::SetPrototypeMethod(ctor, "writeBool", WriteBool);
   Nan::SetPrototypeMethod(ctor, "writeDouble", WriteDouble);
 
   target->Set(Nan::New("Protocol").ToLocalChecked(), ctor->GetFunction());
@@ -125,7 +128,7 @@ NAN_METHOD(Protocol::WriteI16) {
 
 NAN_METHOD(Protocol::WriteI32) {
   Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
-  int32_t num = info[0]->NumberValue();
+  int32_t num = info[0]->Int32Value();
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeI32(num);
@@ -137,6 +140,14 @@ NAN_METHOD(Protocol::WriteDouble) {
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeDouble(num);
+}
+
+NAN_METHOD(Protocol::WriteBool) {
+  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+  bool val = info[0]->BooleanValue();
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeBool(val);
 }
 
 NAN_METHOD(Protocol::WriteListBegin) {
@@ -153,4 +164,20 @@ NAN_METHOD(Protocol::WriteListEnd) {
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeListEnd();
+}
+
+NAN_METHOD(Protocol::WriteSetBegin) {
+  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+  TType setType = static_cast<TType>(info[0]->NumberValue());
+  int setSize = info[1]->NumberValue();
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeSetBegin(setType, setSize);
+}
+
+NAN_METHOD(Protocol::WriteSetEnd) {
+  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeSetEnd();
 }
