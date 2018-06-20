@@ -1,7 +1,7 @@
 {
   "name": "thrift-native",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Native node.js bindings for fast thirft serialization.",
   "main": "bindings.js",
   "scripts": {
     "build": "node-gyp build",
@@ -10,8 +10,8 @@
     "jest": "jest"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Jordan Gensler <jordangens@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "nan": "^2.10.0",
     "thrift": "^0.11.0"
