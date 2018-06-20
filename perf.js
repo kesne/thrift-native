@@ -6,21 +6,23 @@ const { ListingLocationUpdate, Neighborhood } = require('./codegen/listings_type
 
 var suite = new Benchmark.Suite();
 
-const listingUpdate = new Basic({ message: 'This is a test message!' });
+// const listingUpdate = new Basic({ message: 'This is a test message!' });
+// const encodedJSON = JSON.stringify(listingUpdate);
+
+const neighborhoods = Array.from({ length: 10 }, (_, i) => new Neighborhood({ neighborhoodId: i, name: `name-${i}` }));
+
+const listingUpdate = new ListingLocationUpdate({
+  listingId: 1,
+  offsetLat: 123.1347,
+  offsetLng: 1298.590288,
+  locationUpdateTimestamp: 111,
+  cityId: 222,
+  canonicalNeighborhoodId: 333,
+  neighborhoods,
+});
+
 const encodedJSON = JSON.stringify(listingUpdate);
-const encodedByteArray = Buffer.from('GBdUaGlzIGlzIGEgdGVzdCBtZXNzYWdlIQA=', 'base64');
-
-// const neighborhoods = Array.from({ length: 10 }, (_, i) => new Neighborhood({ neighborhoodId: i, name: `name-${i}` }));
-
-// const listingUpdate = new ListingLocationUpdate({
-//   listingId: 1,
-//   offsetLat: 123.1347,
-//   offsetLng: 1298.590288,
-//   locationUpdateTimestamp: 111,
-//   cityId: 222,
-//   canonicalNeighborhoodId: 333,
-//   neighborhoods,
-// });
+const encodedByteArray = Buffer.from('FgIXW7G/7J7IXkAX4xx1dFxKlEAW3gEWvAMWmgUZrBYAGAZuYW1lLTAAFgIYBm5hbWUtMQAWBBgGbmFtZS0yABYGGAZuYW1lLTMAFggYBm5hbWUtNAAWChgGbmFtZS01ABYMGAZuYW1lLTYAFg4YBm5hbWUtNwAWEBgGbmFtZS04ABYSGAZuYW1lLTkAAA==', 'base64');
 
 console.log();
 console.log('Running Suite: Read');

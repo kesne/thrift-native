@@ -1,18 +1,18 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/protocol/TCompactProtocol.h>
-#include "Protocol.h"
+#include "Serializer.h"
 
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-Nan::Persistent<v8::FunctionTemplate> Protocol::constructor;
+Nan::Persistent<v8::FunctionTemplate> Serializer::constructor;
 
-NAN_MODULE_INIT(Protocol::Init) {
-  v8::Local<v8::FunctionTemplate> ctor = Nan::New<v8::FunctionTemplate>(Protocol::New);
+NAN_MODULE_INIT(Serializer::Init) {
+  v8::Local<v8::FunctionTemplate> ctor = Nan::New<v8::FunctionTemplate>(Serializer::New);
   constructor.Reset(ctor);
   ctor->InstanceTemplate()->SetInternalFieldCount(1);
-  ctor->SetClassName(Nan::New("Protocol").ToLocalChecked());
+  ctor->SetClassName(Nan::New("Serializer").ToLocalChecked());
 
   Nan::SetPrototypeMethod(ctor, "flush", Flush);
   Nan::SetPrototypeMethod(ctor, "writeStructBegin", WriteStructBegin);
@@ -31,17 +31,17 @@ NAN_MODULE_INIT(Protocol::Init) {
   Nan::SetPrototypeMethod(ctor, "writeBool", WriteBool);
   Nan::SetPrototypeMethod(ctor, "writeDouble", WriteDouble);
 
-  target->Set(Nan::New("Protocol").ToLocalChecked(), ctor->GetFunction());
+  target->Set(Nan::New("Serializer").ToLocalChecked(), ctor->GetFunction());
 }
 
-NAN_METHOD(Protocol::New) {
+NAN_METHOD(Serializer::New) {
   // throw an error if constructor is called without new keyword
   if(!info.IsConstructCall()) {
-    return Nan::ThrowError(Nan::New("Protocol::New - called without new keyword").ToLocalChecked());
+    return Nan::ThrowError(Nan::New("Serializer::New - called without new keyword").ToLocalChecked());
   }
 
   // create a new instance and wrap our javascript instance
-  Protocol* vec = new Protocol();
+  Serializer* vec = new Serializer();
 
   boost::shared_ptr<TMemoryBuffer> buffer(new TMemoryBuffer());
   boost::shared_ptr<TCompactProtocol> compactProtocol(new TCompactProtocol(buffer));
@@ -55,30 +55,30 @@ NAN_METHOD(Protocol::New) {
   info.GetReturnValue().Set(info.Holder());
 }
 
-NAN_METHOD(Protocol::Flush) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::Flush) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   std::string serialized = self->buffer->getBufferAsString();
   self->buffer->resetBuffer();
   info.GetReturnValue().Set(Nan::New<v8::String>(serialized).ToLocalChecked());
 }
 
-NAN_METHOD(Protocol::WriteStructBegin) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteStructBegin) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   const char* name = *Nan::Utf8String(info[0]->ToString());
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeStructBegin(name);
 }
 
-NAN_METHOD(Protocol::WriteStructEnd) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteStructEnd) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeStructEnd();
 }
 
-NAN_METHOD(Protocol::WriteFieldBegin) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteFieldBegin) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   const char* name = *Nan::Utf8String(info[0]->ToString());
   TType fieldType = static_cast<TType>(info[1]->NumberValue());
   int fieldId = info[2]->NumberValue();
@@ -87,71 +87,71 @@ NAN_METHOD(Protocol::WriteFieldBegin) {
   protocol->writeFieldBegin(name, fieldType, fieldId);
 }
 
-NAN_METHOD(Protocol::WriteFieldEnd) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteFieldEnd) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeFieldEnd();
 }
 
-NAN_METHOD(Protocol::WriteFieldStop) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteFieldStop) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeFieldStop();
 }
 
 
-NAN_METHOD(Protocol::WriteString) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteString) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   const char* str = *Nan::Utf8String(info[0]->ToString());
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeString(str);
 }
 
-NAN_METHOD(Protocol::WriteI64) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteI64) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   int64_t num = info[0]->NumberValue();
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeI64(num);
 }
 
-NAN_METHOD(Protocol::WriteI16) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteI16) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   int16_t num = info[0]->NumberValue();
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeI16(num);
 }
 
-NAN_METHOD(Protocol::WriteI32) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteI32) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   int32_t num = info[0]->Int32Value();
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeI32(num);
 }
 
-NAN_METHOD(Protocol::WriteDouble) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteDouble) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   double num = info[0]->NumberValue();
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeDouble(num);
 }
 
-NAN_METHOD(Protocol::WriteBool) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteBool) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   bool val = info[0]->BooleanValue();
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeBool(val);
 }
 
-NAN_METHOD(Protocol::WriteListBegin) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteListBegin) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   TType listType = static_cast<TType>(info[0]->NumberValue());
   int listSize = info[1]->NumberValue();
 
@@ -159,15 +159,15 @@ NAN_METHOD(Protocol::WriteListBegin) {
   protocol->writeListBegin(listType, listSize);
 }
 
-NAN_METHOD(Protocol::WriteListEnd) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteListEnd) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeListEnd();
 }
 
-NAN_METHOD(Protocol::WriteSetBegin) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteSetBegin) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
   TType setType = static_cast<TType>(info[0]->NumberValue());
   int setSize = info[1]->NumberValue();
 
@@ -175,8 +175,8 @@ NAN_METHOD(Protocol::WriteSetBegin) {
   protocol->writeSetBegin(setType, setSize);
 }
 
-NAN_METHOD(Protocol::WriteSetEnd) {
-  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+NAN_METHOD(Serializer::WriteSetEnd) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeSetEnd();

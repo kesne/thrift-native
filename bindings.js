@@ -1,9 +1,13 @@
-var myModule;
+const thrift = require('thrift');
+const { Serializer } = require('./build/Release/thrift-native.node');
 
-if (process.env.DEBUG) {
-  myModule = require('./build/Debug/thrift-native.node');
-} else {
-  myModule = require('./build/Release/thrift-native.node');
+function Deserializer(encodedByteArray) {
+  var transport = new thrift.TFramedTransport(Buffer.from(encodedByteArray));
+  var protocol = new thrift.TCompactProtocol(transport);
+  return protocol;
 }
 
-module.exports = myModule;
+module.exports = {
+  Serializer,
+  Deserializer,
+};

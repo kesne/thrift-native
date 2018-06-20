@@ -6,7 +6,7 @@ using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
 
-class Protocol : public Nan::ObjectWrap {
+class Serializer : public Nan::ObjectWrap {
 public:
   static NAN_MODULE_INIT(Init);
   static NAN_METHOD(New);

@@ -8,7 +8,7 @@
     "libraries": [ "-lthrift" ],
     "sources": [
       "src/index.cc",
-      "src/Protocol.cc"
+      "src/Serializer.cc"
     ]
   }]
 }

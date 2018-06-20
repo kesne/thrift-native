@@ -1,8 +1,8 @@
 #include <nan.h>
-#include "Protocol.h"
+#include "Serializer.h"
 
 NAN_MODULE_INIT(InitModule) {
-  Protocol::Init(target);
+  Serializer::Init(target);
 }
 
 NODE_MODULE(myModule, InitModule);
