@@ -23,6 +23,8 @@ NAN_MODULE_INIT(Protocol::Init) {
   Nan::SetPrototypeMethod(ctor, "writeListBegin", WriteListBegin);
   Nan::SetPrototypeMethod(ctor, "writeListEnd", WriteListEnd);
   Nan::SetPrototypeMethod(ctor, "writeString", WriteString);
+  Nan::SetPrototypeMethod(ctor, "writeI16", WriteI16);
+  Nan::SetPrototypeMethod(ctor, "writeI32", WriteI32);
   Nan::SetPrototypeMethod(ctor, "writeI64", WriteI64);
   Nan::SetPrototypeMethod(ctor, "writeDouble", WriteDouble);
 
@@ -111,6 +113,22 @@ NAN_METHOD(Protocol::WriteI64) {
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeI64(num);
+}
+
+NAN_METHOD(Protocol::WriteI16) {
+  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+  int16_t num = info[0]->NumberValue();
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeI16(num);
+}
+
+NAN_METHOD(Protocol::WriteI32) {
+  Protocol * self = Nan::ObjectWrap::Unwrap<Protocol>(info.This());
+  int32_t num = info[0]->NumberValue();
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeI32(num);
 }
 
 NAN_METHOD(Protocol::WriteDouble) {
