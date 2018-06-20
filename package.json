@@ -6,18 +6,19 @@
   "scripts": {
     "build": "node-gyp build",
     "install": "node-gyp rebuild",
-    "start": "node ./index.js",
-    "codegen": "thrift --gen js:node --out codegen ./thrift/basic.thrift"
+    "test": "npm run build && npm run jest",
+    "jest": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nan": "^2.10.0"
+    "nan": "^2.10.0",
+    "thrift": "^0.11.0"
   },
   "devDependencies": {
     "benchmark": "^2.1.4",
-    "microtime": "^2.1.8",
-    "thrift": "^0.11.0"
+    "jest": "^23.1.0",
+    "microtime": "^2.1.8"
   }
 }
