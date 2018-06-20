@@ -1,6 +1,6 @@
 {
   "name": "thrift-native",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Native node.js bindings for fast thirft serialization.",
   "main": "bindings.js",
   "scripts": {
