@@ -7,7 +7,7 @@
     "build": "node-gyp build",
     "install": "node-gyp rebuild",
     "start": "node ./index.js",
-    "codegen": "thrift --gen js:node --out codegen ./thrift/listings.thrift"
+    "codegen": "thrift --gen js:node --out codegen ./thrift/basic.thrift"
   },
   "keywords": [],
   "author": "",

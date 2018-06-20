@@ -16,11 +16,17 @@ public:
   static NAN_METHOD(WriteFieldBegin);
   static NAN_METHOD(WriteFieldEnd);
   static NAN_METHOD(WriteFieldStop);
+  static NAN_METHOD(WriteMessageBegin);
+  static NAN_METHOD(WriteMessageEnd);
   static NAN_METHOD(WriteListBegin);
   static NAN_METHOD(WriteListEnd);
   static NAN_METHOD(WriteSetBegin);
   static NAN_METHOD(WriteSetEnd);
+  static NAN_METHOD(WriteMapBegin);
+  static NAN_METHOD(WriteMapEnd);
   static NAN_METHOD(WriteString);
+  static NAN_METHOD(WriteByte);
+  static NAN_METHOD(WriteBinary);
   static NAN_METHOD(WriteI16);
   static NAN_METHOD(WriteI32);
   static NAN_METHOD(WriteI64);

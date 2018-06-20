@@ -20,11 +20,17 @@ NAN_MODULE_INIT(Serializer::Init) {
   Nan::SetPrototypeMethod(ctor, "writeFieldBegin", WriteFieldBegin);
   Nan::SetPrototypeMethod(ctor, "writeFieldEnd", WriteFieldEnd);
   Nan::SetPrototypeMethod(ctor, "writeFieldStop", WriteFieldStop);
+  Nan::SetPrototypeMethod(ctor, "writeMessageBegin", WriteMessageBegin);
+  Nan::SetPrototypeMethod(ctor, "writeMessageEnd", WriteMessageEnd);
   Nan::SetPrototypeMethod(ctor, "writeListBegin", WriteListBegin);
   Nan::SetPrototypeMethod(ctor, "writeListEnd", WriteListEnd);
   Nan::SetPrototypeMethod(ctor, "writeSetBegin", WriteSetBegin);
   Nan::SetPrototypeMethod(ctor, "writeSetEnd", WriteSetEnd);
+  Nan::SetPrototypeMethod(ctor, "writeMapBegin", WriteMapBegin);
+  Nan::SetPrototypeMethod(ctor, "writeMapEnd", WriteMapEnd);
   Nan::SetPrototypeMethod(ctor, "writeString", WriteString);
+  Nan::SetPrototypeMethod(ctor, "writeByte", WriteByte);
+  Nan::SetPrototypeMethod(ctor, "writeBinary", WriteBinary);
   Nan::SetPrototypeMethod(ctor, "writeI16", WriteI16);
   Nan::SetPrototypeMethod(ctor, "writeI32", WriteI32);
   Nan::SetPrototypeMethod(ctor, "writeI64", WriteI64);
@@ -101,6 +107,22 @@ NAN_METHOD(Serializer::WriteFieldStop) {
   protocol->writeFieldStop();
 }
 
+NAN_METHOD(Serializer::WriteMessageBegin) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
+  const char* name = *Nan::Utf8String(info[0]->ToString());
+  TMessageType messageType = static_cast<TMessageType>(info[1]->NumberValue());
+  int fieldId = info[2]->NumberValue();
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeMessageBegin(name, messageType, fieldId);
+}
+
+NAN_METHOD(Serializer::WriteMessageEnd) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeMessageEnd();
+}
 
 NAN_METHOD(Serializer::WriteString) {
   Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
@@ -116,6 +138,22 @@ NAN_METHOD(Serializer::WriteI64) {
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeI64(num);
+}
+
+NAN_METHOD(Serializer::WriteByte) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
+  int8_t num = info[0]->NumberValue();
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeByte(num);
+}
+
+NAN_METHOD(Serializer::WriteBinary) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
+  const char* blob = *Nan::Utf8String(info[0]->ToString());
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeBinary(blob);
 }
 
 NAN_METHOD(Serializer::WriteI16) {
@@ -180,4 +218,21 @@ NAN_METHOD(Serializer::WriteSetEnd) {
 
   TCompactProtocol * protocol = self->protocol.get();
   protocol->writeSetEnd();
+}
+
+NAN_METHOD(Serializer::WriteMapBegin) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
+  TType keyType = static_cast<TType>(info[0]->NumberValue());
+  TType valType = static_cast<TType>(info[1]->NumberValue());
+  int size = info[2]->NumberValue();
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeMapBegin(keyType, valType, size);
+}
+
+NAN_METHOD(Serializer::WriteMapEnd) {
+  Serializer * self = Nan::ObjectWrap::Unwrap<Serializer>(info.This());
+
+  TCompactProtocol * protocol = self->protocol.get();
+  protocol->writeMapEnd();
 }

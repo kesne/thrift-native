@@ -27,14 +27,3 @@ const deserializer = new Deserializer(serailizedThrift);
 const structFromThrift = new MyThriftStruct();
 structFromThrift.read(deserializer);
 ```
-
-## Write methods not yet implemented
-
-This project isn't really ready for production use, the following have not yet been implemented:
-
-- writeMessageBegin
-- writeMessageEnd
-- writeMapBegin
-- writeMapEnd
-- writeByte
-- writeBinary

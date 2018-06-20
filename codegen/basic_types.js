@@ -13,9 +13,13 @@ var Q = thrift.Q;
 var ttypes = module.exports = {};
 var Basic = module.exports.Basic = function(args) {
   this.message = null;
+  this.extra = null;
   if (args) {
     if (args.message !== undefined && args.message !== null) {
       this.message = args.message;
+    }
+    if (args.extra !== undefined && args.extra !== null) {
+      this.extra = args.extra;
     }
   }
 };
@@ -34,15 +38,19 @@ Basic.prototype.read = function(input) {
     switch (fid)
     {
       case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.message = input.readString();
+      if (ftype == Thrift.Type.BYTE) {
+        this.message = input.readByte();
       } else {
         input.skip(ftype);
       }
       break;
-      case 0:
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.extra = input.readBinary();
+      } else {
         input.skip(ftype);
-        break;
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -55,8 +63,13 @@ Basic.prototype.read = function(input) {
 Basic.prototype.write = function(output) {
   output.writeStructBegin('Basic');
   if (this.message !== null && this.message !== undefined) {
-    output.writeFieldBegin('message', Thrift.Type.STRING, 1);
-    output.writeString(this.message);
+    output.writeFieldBegin('message', Thrift.Type.BYTE, 1);
+    output.writeByte(this.message);
+    output.writeFieldEnd();
+  }
+  if (this.extra !== null && this.extra !== undefined) {
+    output.writeFieldBegin('extra', Thrift.Type.STRING, 2);
+    output.writeBinary(this.extra);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
